@@ -1,6 +1,10 @@
 from django import forms
 from .models import Employee
+from django.core.validators import RegexValidator
 class EmployeeForm(forms.ModelForm):
+    emp_contact = forms.CharField(max_length=10, validators=[RegexValidator(
+        '\d{10}', message="Enter a Valid Indian Phone Number")])
+ 
     class Meta:
         model = Employee
         fields = ('emp_id','emp_name', 'emp_email', 'emp_contact', 'emp_role', 'emp_salary')

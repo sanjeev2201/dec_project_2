@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from .models import Employee
 from .forms import EmployeeForm
+from django.contrib import messages
  # Create your views here.
 
 
@@ -10,14 +11,20 @@ def create_employee(request):
     if request.method == 'POST':
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('employees-list')
-
-    context = {
-        'form': form,
-    }
-     
-    return render(request, 'employee/create.html', context)
+            try:
+                form.save()
+                messages.success(request, 'New employee added Succesfully')
+                return redirect('employees-list')
+            except Exception as e:
+                messages.error(request, str(e))
+                return redirect('employees-list')
+            
+    else:
+        context = {
+            'form': form
+        }
+        
+        return render(request, 'employee/create.html', context)
 def employees_list(request):
     employees = Employee.objects.all()
     context = {
